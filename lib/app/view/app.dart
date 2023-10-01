@@ -2,7 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:smart_home_ui/home/home.dart';
+import 'package:smart_home_ui/app/router/router.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -46,15 +46,15 @@ class _AppState extends State<App> {
         onThemeModeChanged: (themeMode) {
           this.themeMode = themeMode;
         },
-        builder: (context) => const PlatformApp(
+        builder: (context) => PlatformApp.router(
+          routerConfig: router,
           debugShowCheckedModeBanner: false,
-          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+          localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
             DefaultMaterialLocalizations.delegate,
             DefaultWidgetsLocalizations.delegate,
             DefaultCupertinoLocalizations.delegate,
           ],
           title: 'Homesense',
-          home: Homesense(),
         ),
       ),
       // ),
