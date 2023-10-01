@@ -42,7 +42,7 @@ class _AirConditionnerState extends State<AirConditionner> {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () => Navigator.of(context).pop(),
           icon: const HeroIcon(HeroIcons.arrowLeft),
         ),
         actions: [
@@ -81,55 +81,60 @@ class _AirConditionnerState extends State<AirConditionner> {
             ),
             SizedBox(
               height: 320,
-              child: CircularSlider(
-                onAngleChanged: (angle) {},
-                center: Center(
-                  child: Container(
-                    width: 184,
-                    height: 184,
-                    decoration: BoxDecoration(
-                      color: context.boxColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.colorScheme.primary.withOpacity(0.15),
-                          offset: const Offset(0, -1),
-                          blurRadius: 24,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        4.vGap,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '24',
-                              style: context.textTheme.headlineMedium!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 48,
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: const Offset(0, -14.5),
-                              child: Text(
-                                '°C',
-                                style: context.textTheme.bodyLarge!.copyWith(
-                                  fontSize: 18,
+              child: Hero(
+                tag: '0-air-conditionner',
+                child: CircularSlider(
+                  onAngleChanged: (angle) {},
+                  center: Center(
+                    child: Container(
+                      width: 184,
+                      height: 184,
+                      decoration: BoxDecoration(
+                        color: context.boxColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color:
+                                context.colorScheme.primary.withOpacity(0.15),
+                            offset: const Offset(0, -1),
+                            blurRadius: 24,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          4.vGap,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '24',
+                                style:
+                                    context.textTheme.headlineMedium!.copyWith(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 48,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        14.vGap,
-                        const Text(
-                          'Room \n Temperature',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                              Transform.translate(
+                                offset: const Offset(0, -14.5),
+                                child: Text(
+                                  '°C',
+                                  style: context.textTheme.bodyLarge!.copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          14.vGap,
+                          const Text(
+                            'Room \n Temperature',
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

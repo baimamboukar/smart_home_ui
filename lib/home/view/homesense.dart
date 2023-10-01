@@ -208,8 +208,11 @@ class Homesense extends StatelessWidget {
                 ),
                 itemCount: devices.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return DeviceBox(
-                    device: devices[index],
+                  return Hero(
+                    tag: '$index-air-conditionner',
+                    child: DeviceBox(
+                      device: devices[index],
+                    ),
                   );
                 },
               ),
@@ -230,7 +233,7 @@ class DeviceBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.goNamed('air-conditionner'),
+      onTap: () => context.pushNamed('air-conditionner'),
       child: Container(
         height: 200,
         decoration: BoxDecoration(

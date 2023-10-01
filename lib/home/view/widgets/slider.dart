@@ -53,7 +53,7 @@ class _CircularSliderState extends State<CircularSlider> {
           ],
         ),
         Positioned(
-          left: draggerPosition.dx,
+          right: draggerPosition.dx,
           top: draggerPosition.dy,
           child: GestureDetector(
             onPanStart: (details) {
