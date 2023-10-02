@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:smart_home_ui/app/extensions/context.dart';
 import 'package:smart_home_ui/app/extensions/spacing.dart';
+import 'package:smart_home_ui/home/view/widgets/air_conditionner_preference_box.dart';
+import 'package:smart_home_ui/home/view/widgets/gradient_fab.dart';
 import 'package:smart_home_ui/home/view/widgets/slider.dart';
 
 class AirConditionner extends StatefulWidget {
@@ -17,27 +20,13 @@ class _AirConditionnerState extends State<AirConditionner> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: InkWell(
-        onTap: () {},
-        child: Container(
-          height: 64,
-          width: 64,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                context.colorScheme.primary,
-                context.colorScheme.secondary,
-              ],
-            ),
-            shape: BoxShape.circle,
-          ),
-          child: const HeroIcon(
-            HeroIcons.power,
-            size: 28,
-            style: HeroIconStyle.solid,
-          ),
-        ),
+        onTap: () async {
+          await showPlatformDialog<void>(
+            context: context,
+            builder: (context) => const _TurnOffDialog(),
+          );
+        },
+        child: const GradientFAB(icon: HeroIcons.power),
       ),
       appBar: AppBar(
         centerTitle: true,
@@ -81,63 +70,9 @@ class _AirConditionnerState extends State<AirConditionner> {
             ),
             SizedBox(
               height: 320,
-              child: Hero(
-                tag: '0-air-conditionner',
-                child: CircularSlider(
-                  onAngleChanged: (angle) {},
-                  center: Center(
-                    child: Container(
-                      width: 184,
-                      height: 184,
-                      decoration: BoxDecoration(
-                        color: context.boxColor,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                context.colorScheme.primary.withOpacity(0.15),
-                            offset: const Offset(0, -1),
-                            blurRadius: 24,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          4.vGap,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '24',
-                                style:
-                                    context.textTheme.headlineMedium!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 48,
-                                ),
-                              ),
-                              Transform.translate(
-                                offset: const Offset(0, -14.5),
-                                child: Text(
-                                  '°C',
-                                  style: context.textTheme.bodyLarge!.copyWith(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          14.vGap,
-                          const Text(
-                            'Room \n Temperature',
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+              child: CircularSlider(
+                onAngleChanged: (angle) => sliderAngle.value = angle,
+                center: const _InnerSliderBox(),
               ),
             ),
             24.vGap,
@@ -159,18 +94,20 @@ class _AirConditionnerState extends State<AirConditionner> {
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _AirConditionnerPreferenceBox(
+                AirConditionnerPreferenceBox(
                   icon: Icons.air,
-                  selected: true,
+                  index: 0,
                   preference: 'COLD',
                 ),
-                _AirConditionnerPreferenceBox(
+                AirConditionnerPreferenceBox(
                   icon: Icons.water,
                   preference: 'FAN',
+                  index: 1,
                 ),
-                _AirConditionnerPreferenceBox(
+                AirConditionnerPreferenceBox(
                   icon: Icons.water_drop_outlined,
                   preference: 'DRY',
+                  index: 2,
                 ),
               ],
             ),
@@ -181,73 +118,105 @@ class _AirConditionnerState extends State<AirConditionner> {
   }
 }
 
-class _AirConditionnerPreferenceBox extends StatelessWidget {
-  const _AirConditionnerPreferenceBox({
-    required this.icon,
-    required this.preference,
-    // ignore: unused_element
-    this.selected = false,
-  });
-  final IconData icon;
-  final bool selected;
-  final String preference;
+class SliderAngleWatcher extends ValueNotifier<double> {
+  SliderAngleWatcher() : super(0);
+}
+
+final sliderAngle = SliderAngleWatcher();
+
+class _InnerSliderBox extends StatelessWidget {
+  const _InnerSliderBox();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 114,
-      width: 94,
-      decoration: BoxDecoration(
-        gradient: selected
-            ? LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  context.colorScheme.primary,
-                  context.colorScheme.secondary,
-                ],
-              )
-            : null,
-        color: !selected ? context.boxColor : null,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: !selected
-                    ? context.colorScheme.background
-                    : context.colorScheme.onBackground,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 28,
-                  color: !selected
-                      ? context.colorScheme.onBackground
-                      : context.colorScheme.background,
-                ),
-              ),
+    return Center(
+      child: Container(
+        width: 184,
+        height: 184,
+        decoration: BoxDecoration(
+          color: context.boxColor,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: context.colorScheme.primary.withOpacity(0.15),
+              offset: const Offset(0, -1),
+              blurRadius: 24,
             ),
-            const Spacer(),
-            Text(
-              preference,
-              style: context.textTheme.bodyLarge!.copyWith(
-                fontSize: 16,
-                color: !selected
-                    ? context.colorScheme.onBackground
-                    : context.colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            4.vGap,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: sliderAngle,
+                  builder: (context, value, child) {
+                    return Text(
+                      //'${value.toInt()}',
+                      '22',
+                      style: context.textTheme.headlineMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 48,
+                      ),
+                    );
+                  },
+                ),
+                Transform.translate(
+                  offset: const Offset(0, -14.5),
+                  child: Text(
+                    '°C',
+                    style: context.textTheme.bodyLarge!.copyWith(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            14.vGap,
+            const Text(
+              'Room \n Temperature',
+              textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _TurnOffDialog extends StatelessWidget {
+  const _TurnOffDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return PlatformAlertDialog(
+      content: const Text(
+        'Are you sure you want to turn off the air conditionner?',
+      ),
+      actions: [
+        PlatformDialogAction(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: context.textTheme.bodyLarge!.copyWith(
+              color: context.colorScheme.error,
+            ),
+          ),
+        ),
+        PlatformDialogAction(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Turn off',
+            style: context.textTheme.bodyLarge!.copyWith(
+              color: context.colorScheme.primary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

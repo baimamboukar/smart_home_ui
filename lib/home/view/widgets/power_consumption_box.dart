@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:heroicons/heroicons.dart';
+import 'package:redacted/redacted.dart';
 import 'package:smart_home_ui/app/extensions/context.dart';
 import 'package:smart_home_ui/app/extensions/spacing.dart';
 
@@ -84,6 +85,6 @@ class PowerConsumptionBox extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).redacted(context: context, redact: false);
   }
 }
